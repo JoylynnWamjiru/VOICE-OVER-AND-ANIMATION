@@ -15,8 +15,15 @@ shots; everything between them is animated over the voice from the same take.
 
 `SKILL_DIR` = the directory containing this SKILL.md.
 
-**Always load `SKILL_DIR/references/scene-blocks.md` before writing the shot list.** It holds the
-block catalogue, the pacing rules, and the sound-cue vocabulary.
+**Always load `SKILL_DIR/references/studio-blocks.md` and `SKILL_DIR/references/scene-blocks.md` before
+writing the shot list.** `studio-blocks.md` is the house style: real app interfaces, headline captions,
+one stage per idea, engagement CTAs, distilled from the reference Shorts. `scene-blocks.md` holds
+transitions, the older blocks and the sound-cue vocabulary.
+
+**The one rule that matters most: show the real thing.** When the voice names an app, product, service
+or action, the frame shows a faithful replica of its interface being used (a WhatsApp chat with messages
+arriving, the M-Pesa confirmation SMS, a checkout form rejecting a card). An icon plus a word is a
+generic animation; don't ship one.
 
 ---
 
@@ -27,7 +34,7 @@ block catalogue, the pacing rules, and the sound-cue vocabulary.
 | `audio` or `video` | Yes | `~/Downloads/voice-note.m4a` · a to-camera recording `~/Movies/take-1.mp4` |
 | `script` | No | the script, plain or with `[FACE]` / `[VOICE]` sections; captions are checked against it. Sections start on their own line with exactly `[FACE]` or `[VOICE]` |
 | `format` | No | `vertical` 1080x1920 (default) · `landscape` 1920x1080 |
-| `template` | No | visual theme id from `templates/templates.json` (default `kinetic`) |
+| `template` | No | visual theme id from `templates/templates.json` (default `studio`) |
 | `music` | No | `synth` (default) · path to a royalty-free track · `none` |
 | `model` | No | `small` (default) · `base` for clean audio, ~2x faster |
 | `vocab` | No | names and terms the speaker uses: `"Kubernetes, Kafka, Jane Doe"` |
@@ -123,17 +130,22 @@ Captions follow what was said, so an ad-libbed line stays; tell the user where t
 
 ## Step 4 — Shot list (confirm before building)
 
-Load `references/scene-blocks.md`. Write a shot table — one row per shot, cut on word times:
+Load `references/studio-blocks.md` and `references/scene-blocks.md`. Write a stage table — one row per
+stage (one interface), with the beats inside it on word times:
 
 ```
-#   in-out        line (spoken)                      block              sound
-01  0.00-2.70     Did you know Java wasn't…          slam + strike      hit@0.44 hit@2.12
-02  2.70-6.10     a completely different problem     highlight-box      whoosh, hit@4.60
-03  6.10-8.30     Back in the early 1990s            vhs + counter      tick, hit@7.20
+#   in-out        line (spoken)                    interface                 beats (word@time)                       key        look
+01  0.00-6.20     You send your mum money…         phone · M-Pesa SMS        sms@1.1 select(amount)@2.4 zoom@3.8      money 💸   light
+02  6.20-14.80    she replies on WhatsApp…         phone · WhatsApp chat     msg@6.9 typing@8.0 msg@8.9 ✓✓blue@9.6    instantly  light
+03  14.80-19.50   but here's the catch            stat card                 counter@15.2 hit@16.4                    catch      dark
 ```
 
-Rules: a new shot every 1–4 seconds; a hit only on a word that deserves it; captions hidden whenever
-the spoken word *is* the visual. Find photos and clips before the table is final (Step 5).
+Rules: every row names a **real interface** from the topic lookup in `studio-blocks.md`; something
+changes on screen every 1–2 s (click, message, tick, fill, count, focus, zoom); one `key()` word per
+sentence; hits only on the word that lands the point; dark for 1–3 contrast beats; end on a comment or
+save CTA. A row with no interface and no interaction is generic; redesign it before showing the table.
+List every invented detail (names, amounts, codes) under the table. Find photos and clips before the
+table is final (Step 5).
 
 **Pick the template (theme) now.** Read `templates/templates.json` and choose the `id` whose mood
 matches the topic. Each theme changes type, colour, captions *and* motion (default shot entry, shake,
@@ -141,7 +153,8 @@ flash), so it is a real choice, not a palette swap:
 
 | id | Pick it for |
 |---|---|
-| `kinetic` | fast, dark, neon — tech explainers, launches, listicles (default) |
+| `studio` | **default** — bright product explainers: real app interfaces, headline captions, light grid with dark contrast beats |
+| `kinetic` | fast, dark, neon — tech explainers, launches, listicles |
 | `documentary` | founder stories, company origins, biographies — serif, film grain, slow fades |
 | `newsroom` | announcements, funding, outages, "this week in tech" — condensed type, ticker, wipes |
 | `blueprint` | system design, architecture, "how X works under the hood" — grid paper, dashed outlines |
@@ -202,7 +215,7 @@ which footage belongs to someone else before posting.
 ```bash
 python3 SKILL_DIR/scripts/fill_template.py "$work" <duration> --format vertical --template <template-id>
 # or --format landscape for 1920x1080
-# omit --template to use the default kinetic theme
+# omit --template to use the default studio theme
 ```
 
 `<duration>` = last word end + ~2.5s for the outro; with a `video`, last word end + 0.5s, and never past
@@ -243,8 +256,15 @@ outer `#world` and `#cam` containers intact:
 `shot()`, `slam()`, `hit()`, `rise()`, `pop()`, `drift()`, `kenBurns()`, `lowerThird()`, `ticker()`,
 `typer()`, `counter()`, `terminal()`, `faceCam()`, `clip()`, `broll()`, and the `NOCAP` ranges. Every helper that makes noise pushes its own sound cue.
 
-The display style (`.xl`) is uppercase and width-expanded; captions are condensed. Size headlines
-for the expanded width — a vertical frame fits ~6 characters at 250px.
+The `studio` template adds the interaction helpers: `key(t, emoji)` (keyword box in the headline),
+`select()`, `focus()` / `unfocus()`, `click()` / `cursorOff()`, `fill()`, `check()`, `msg()`,
+`notify()`, `stagger()`, `label()`, `addClass()`, `zoomTo()` / `zoomOut()`, `out()`. Its captions are
+the headline at the top (y 150–300), so keep the stage in y 360–1780. Build interfaces from the UI kit
+in `studio-blocks.md` (phone, WhatsApp, SMS, notification, window, browser, terminal, form, rows, bars,
+pills, chip, comment CTA).
+
+In the other themes the display style (`.xl`) is uppercase and width-expanded; size headlines for the
+expanded width — a vertical frame fits ~6 characters at 250px.
 
 ---
 
@@ -359,7 +379,9 @@ Name any unlicensed clip on its own line.
   the report names every ⚠ file.
 - **Every fix is verified in the encoded file**, not just in a still.
 - Transcription is local. Never upload the audio.
-- One brand accent. Green only for success states, red only for errors.
+- One brand accent. Green only for success states, red only for errors. (A replicated app keeps its
+  own colours: WhatsApp green is the app, not the brand.)
+- **No generic stand-ins.** A named app or product is shown as its interface, not an icon and a word.
 - Timelines are deterministic: no `Math.random()`, no `Date.now()`. The grain uses a seeded PRNG.
 - Captions never cover the element the viewer is meant to read; hide them via `NOCAP` instead.
 - Report every image credit and every invented detail (dates, labels) that isn't in the audio.

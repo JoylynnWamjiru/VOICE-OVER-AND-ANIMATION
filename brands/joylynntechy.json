@@ -1,0 +1,20 @@
+{
+  "handle": "@joylynntechy",
+  "colors": {
+    "bg": "#12121f",
+    "surface1": "#201a29",
+    "surface2": "#292130",
+    "border": "#382b3b",
+    "accent": "#f0196a",
+    "textBody": "#E6E6E6",
+    "textMuted": "#6B7A99"
+  },
+  "fonts": {
+    "heading": "Archivo",
+    "mono": "Geist Mono",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@400..700&display=swap"
+  },
+  "output": {
+    "dir": "~/Downloads"
+  }
+}

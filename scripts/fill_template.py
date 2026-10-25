@@ -19,8 +19,8 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 FORMATS = {
-    "vertical": {"width": 1080, "height": 1920, "captionTop": 1500},
-    "landscape": {"width": 1920, "height": 1080, "captionTop": 880},
+    "vertical": {"width": 1080, "height": 1920, "captionTop": 1500, "headTop": 150},
+    "landscape": {"width": 1920, "height": 1080, "captionTop": 880, "headTop": 60},
 }
 
 
@@ -109,6 +109,7 @@ def main() -> int:
         "width": geometry["width"],
         "height": geometry["height"],
         "captionTop": geometry["captionTop"],
+        "headTop": geometry["headTop"],
         "grainWidth": geometry["width"] // 2,
         "grainHeight": geometry["height"] // 2,
         "duration": f"{args.duration:.2f}",
@@ -146,7 +147,13 @@ def main() -> int:
         captions.write_text("window.PHRASES=[];", encoding="utf-8")
     vendor = args.work / "vendor"
     if not vendor.exists():
-        vendor.symlink_to(SKILL_DIR / "assets", target_is_directory=True)
+        try:
+            vendor.symlink_to(SKILL_DIR / "assets", target_is_directory=True)
+        except OSError:
+            # Windows without Developer Mode can't symlink; a directory junction needs no privilege
+            import subprocess
+            subprocess.run(["cmd", "/c", "mklink", "/J", str(vendor), str(SKILL_DIR / "assets")],
+                           check=True, capture_output=True)
 
     print(f"{args.work / 'index.html'} · {geometry['width']}x{geometry['height']} · {args.duration:.2f}s · template {template['id']} · brand {brand_path}")
     print("Next: replace the demo shots between BEGIN/END SHOTS and BEGIN/END TIMELINE")

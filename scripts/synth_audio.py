@@ -118,6 +118,22 @@ def error():
     return np.sign(np.sin(2 * np.pi * 180 * t)) * np.exp(-t * 14) * 0.05
 
 
+def click():
+    # Two short transients: the press and the release of a mouse button
+    t = t_axis(0.06)
+    press = np.sin(2 * np.pi * 3200 * t) * np.exp(-t * 400)
+    release = np.roll(np.sin(2 * np.pi * 2600 * t) * np.exp(-t * 500), int(0.035 * SR))
+    return (press + 0.6 * release) * 0.08
+
+
+def msg():
+    # Rising two-note chime, the sound of a chat message arriving
+    t = t_axis(0.32)
+    first = np.sin(2 * np.pi * 880 * t) * np.exp(-t * 30) * (t < 0.12)
+    second = np.sin(2 * np.pi * 1320 * t) * np.exp(-np.clip(t - 0.09, 0, None) * 18) * (t >= 0.09)
+    return (first + second) * 0.07
+
+
 def build_sfx(cues, samples):
     sfx = np.zeros(samples)
     unknown = set()
@@ -144,6 +160,10 @@ def build_sfx(cues, samples):
             place(sfx, stamp(), at)
         elif kind == "error":
             place(sfx, error(), at)
+        elif kind == "click":
+            place(sfx, click(), at)
+        elif kind == "msg":
+            place(sfx, msg(), at)
         else:
             unknown.add(kind)
     return sfx, unknown

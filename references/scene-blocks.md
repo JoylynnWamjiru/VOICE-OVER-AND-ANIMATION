@@ -26,6 +26,7 @@ lines. Pick a block for each line of speech, then time it to the word.
 | `whipUp` | vertical whip | lists, rising energy, "then…" |
 | `zoom` | punch in from blur | reveals, new chapter |
 | `fade` | soft | reflective lines, setup before a reveal |
+| `push` | rises in from below *(studio)* | the next stage in an explainer |
 | `soft` | scale-settle with blur | polished launches, calm reveals |
 | `slide` | push in from the right, no blur | next item, next chapter |
 | `wipe` | hard-edged left-to-right reveal | news beats, diagram steps |
