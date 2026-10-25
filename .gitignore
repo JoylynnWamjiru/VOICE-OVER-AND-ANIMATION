@@ -1,0 +1,11 @@
+# Installed by scripts/setup.sh
+scripts/node_modules/
+assets/*.woff2
+assets/fonts.css
+assets/fonts.url
+assets/gsap.min.js
+# Rendered output and work dirs never belong in the repo
+work/
+*.mp4
+*.wav
+__pycache__/
